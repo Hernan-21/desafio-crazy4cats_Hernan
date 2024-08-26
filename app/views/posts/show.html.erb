@@ -1,0 +1,24 @@
+<!-- app/views/posts/show.html.erb -->
+<div class="container mt-4">
+  <div class="card">
+    <div class="card-body">
+      <p class="card-text"><small class="text-muted">Por <%= @post.user.email %> - <%= @post.created_at.strftime("%d/%m/%Y") %></small></p>
+      <p class="card-text"><%= @post.content %></p>
+      
+      <div class="d-flex justify-content-between align-items-center">
+        <%= button_to "Me gusta", post_reactions_path(@post, reaction_type: :like), method: :post, class: "btn btn-primary" %>
+        <%= button_to "No me gusta", post_reactions_path(@post, reaction_type: :dislike), method: :post, class: "btn btn-secondary" %>
+        <p>
+          <span class="badge bg-success">Likes: <%= @post.reactions.where(reaction_type: :like).count %></span>
+          <span class="badge bg-danger">Dislikes: <%= @post.reactions.where(reaction_type: :dislike).count %></span>
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <h3 class="mt-4">Comentarios</h3>
+  <%= render @post.comments %>
+
+  <h4 class="mt-4">Añadir comentario</h4>
+  <%= render 'comments/form' %>
+</div>

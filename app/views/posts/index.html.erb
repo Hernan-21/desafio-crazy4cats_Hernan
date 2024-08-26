@@ -1,0 +1,58 @@
+<!-- app/views/posts/index.html.erb -->
+<h1>Publicaciones</h1>
+<%= link_to 'Nueva Publicación', new_post_path if user_signed_in? %>
+
+<% @posts.each do |post| %>
+  <div>
+    <h2><%= link_to post.title, post %></h2>
+    <p>Por <%= post.user.email %> - <%= post.created_at.strftime("%d/%m/%Y") %></p>
+    <p><%= truncate(post.content, length: 100) %></p>
+  </div>
+<% end %>
+
+<!-- app/views/posts/show.html.erb -->
+<h1><%= @post.title %></h1>
+<p>Por <%= @post.user.email %> - <%= @post.created_at.strftime("%d/%m/%Y") %></p>
+
+<div>
+  <%= @post.content %>
+</div>
+
+<div>
+  <%= button_to "Me gusta", post_reactions_path(@post, reaction_type: :like), method: :post %>
+  <%= button_to "No me gusta", post_reactions_path(@post, reaction_type: :dislike), method: :post %>
+  <p>Likes: <%= @post.reactions.where(reaction_type: :like).count %></p>
+  <p>Dislikes: <%= @post.reactions.where(reaction_type: :dislike).count %></p>
+</div>
+
+<h3>Comentarios</h3>
+<% @post.comments.each do |comment| %>
+  <div>
+    <p><%= comment.content %></p>
+    <p><small><%= comment.user ? comment.user.email : "Anónimo" %> - <%= comment.created_at.strftime("%d/%m/%Y") %></small></p>
+  </div>
+<% end %>
+
+<%= form_with(model: [@post, @comment], local: true) do |f| %>
+  <%= f.text_area :content, placeholder: "Añade un comentario..." %>
+  <%= f.check_box :anonymous %>
+  <%= f.label :anonymous, "Comentar anónimamente" %>
+  <%= f.submit "Comentar" %>
+<% end %>
+
+<!-- app/views/posts/new.html.erb y app/views/posts/edit.html.erb -->
+<h1><%= @post.new_record? ? "Nueva Publicación" : "Editar Publicación" %></h1>
+
+<%= form_with(model: @post, local: true) do |f| %>
+  <div>
+    <%= f.label :title %>
+    <%= f.text_field :title %>
+  </div>
+
+  <div>
+    <%= f.label :content %>
+    <%= f.text_area :content %>
+  </div>
+
+  <%= f.submit %>
+<% end %>

@@ -1,0 +1,26 @@
+default: &default
+  adapter: postgresql
+  encoding: unicode
+  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+
+development:
+  <<: *default
+  database: crazy4cats_development
+  username: vagrant
+  password: ror2024
+  host: localhost
+  port: 54320
+
+test:
+  <<: *default
+  database: crazy4cats_test
+  username: vagrant
+  password: ror2024
+  host: localhost
+  port: 54320
+
+production:
+  <<: *default
+  database: crazy4cats_production
+  username: crazy4cats
+  password: <%= ENV["CRAZY4CATS_DATABASE_PASSWORD"] %>
